@@ -34,56 +34,56 @@ public class McdwClient implements ClientModInitializer {
         }
     }
     public static void registerBowPredicates(McdwBow bow) {
-        FabricModelPredicateProviderRegistry.register(bow, new Identifier("pull"),(itemStack, clientWorld, livingEntity) -> {
-            if (livingEntity == null) {
+        FabricModelPredicateProviderRegistry.register(bow, new Identifier("pull"),(stack, world, entity, i) -> {
+            if (entity == null) {
                 return 0.0F;
             } else {
-                return livingEntity.getActiveItem() != itemStack ? 0.0F : (float)(itemStack.getMaxUseTime() - livingEntity.getItemUseTimeLeft()) / bow.getMaxDrawTime();
+                return entity.getActiveItem() != stack ? 0.0F :
+                        (float)(stack.getMaxUseTime() - entity.getItemUseTimeLeft()) / bow.getMaxDrawTime();
             }
         });
 
-        FabricModelPredicateProviderRegistry.register(bow, new Identifier("pulling"), (itemStack, clientWorld, livingEntity) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F);
+        FabricModelPredicateProviderRegistry.register(bow, new Identifier("pulling"), (stack, world, entity, i) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F);
     }
 
     public static void registerCrossbowPredicates(McdwCrossbow crossbow) {
-        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("pull"),(itemStack, clientWorld, livingEntity) -> {
-            if (livingEntity == null) {
+        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("pull"),(stack, world, entity, i) -> {
+            if (entity == null) {
                 return 0.0F;
             } else {
-                return McdwCrossbow.isCharged(itemStack) ? 0.0F :
-                        (float) (itemStack.getMaxUseTime() - livingEntity.getItemUseTimeLeft()) / (float)  McdwCrossbow.getPullTime(itemStack);
+                return McdwCrossbow.isCharged(stack) ? 0.0F :
+                        (float) (stack.getMaxUseTime() - entity.getItemUseTimeLeft()) / (float)  McdwCrossbow.getPullTime(stack);
             }
         });
 
-        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("pulling"), (itemStack, clientWorld, livingEntity) -> {
-            if (livingEntity == null) {
+        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("pulling"), (stack, world, entity, i) -> {
+            if (entity == null) {
                 return 0.0F;
             } else {
-                return livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack && !McdwCrossbow.isCharged(itemStack) ? 1.0F : 0.0F;
+                return entity.isUsingItem() && entity.getActiveItem() == stack && !McdwCrossbow.isCharged(stack) ? 1.0F : 0.0F;
             }
         });
 
-        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("charged"), (itemStack, clientWorld, livingEntity) -> {
-            if (livingEntity == null) {
+        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("charged"), (stack, world, entity, i) -> {
+            if (entity == null) {
                 return 0.0F;
             } else {
-                return McdwCrossbow.isCharged(itemStack) ? 1.0F : 0.0F;
+                return McdwCrossbow.isCharged(stack) ? 1.0F : 0.0F;
             }
         });
 
-        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("firework"), (itemStack, clientWorld, livingEntity) -> {
-            if (livingEntity == null) {
+        FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("firework"), (stack, world, entity, i) -> {
+            if (entity == null) {
                 return 0.0F;
             } else {
-                return McdwCrossbow.isCharged(itemStack) && McdwCrossbow.hasProjectile(itemStack,
+                return McdwCrossbow.isCharged(stack) && McdwCrossbow.hasProjectile(stack,
                         Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
             }
         });
     }
 
     public static void registerShieldPredicates(McdwShield shield){
-        FabricModelPredicateProviderRegistry.register(shield, new Identifier("blocking"), (itemStack, clientWorld,
-                livingEntity) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem()
-                == itemStack ? 1.0F : 0.0F );
+        FabricModelPredicateProviderRegistry.register(shield, new Identifier("blocking"), (stack, world, entity, i) -> entity != null && entity.isUsingItem() && entity.getActiveItem()
+                == stack ? 1.0F : 0.0F );
     }
 }

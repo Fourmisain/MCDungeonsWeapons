@@ -1,8 +1,8 @@
 package chronosacaria.mcdw.api.util;
 
 import chronosacaria.mcdw.enchants.lists.MeleeRangedEnchantmentList;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -10,10 +10,7 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.thrown.SnowballEntity;
 import net.minecraft.item.*;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
 import java.util.Comparator;
@@ -109,7 +106,7 @@ public class ProjectileEffectHelper {
             if (arrowEntity.pickupType == PersistentProjectileEntity.PickupPermission.ALLOWED) {
                 arrowEntity.dropStack(new ItemStack(Items.ARROW), 0.1F);
             }
-            arrowEntity.remove();
+            arrowEntity.remove(Entity.RemovalReason.KILLED);
         }
     }
 
@@ -156,9 +153,9 @@ public class ProjectileEffectHelper {
             projectile = createChainReactionProjectile(world, attacker, projectileStack, originalArrow);
             projectile.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
             Vec3d upVector = victim.getOppositeRotationVector(1.0F);
-            Quaternion quaternion = new Quaternion(new Vector3f(upVector), centerOffset, true);
+            Quaternion quaternion = new Quaternion(new Vec3f(upVector), centerOffset, true);
             Vec3d lookVector = victim.getRotationVec(1.0F);
-            Vector3f vector3f = new Vector3f(lookVector);
+            Vec3f vector3f = new Vec3f(lookVector);
             vector3f.rotate(quaternion);
             projectile.setVelocity((double)vector3f.getX(), (double)vector3f.getY(), (double)vector3f.getZ(), v1, v2);
             world.spawnEntity(projectile);
