@@ -64,7 +64,7 @@ public class McdwBow extends BowItem implements IRangedWeapon {
     public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
         if (user instanceof PlayerEntity) {
             PlayerEntity playerEntity = (PlayerEntity) user;
-            boolean bl = playerEntity.abilities.creativeMode
+            boolean bl = playerEntity.getAbilities().creativeMode
                     || EnchantmentHelper.getLevel(Enchantments.INFINITY, stack) > 0;
             ItemStack itemStack = playerEntity.getArrowType(stack);
             if (!itemStack.isEmpty() || bl) {
@@ -109,7 +109,7 @@ public class McdwBow extends BowItem implements IRangedWeapon {
                         // DAMAGE TOOL
                         stack.damage(1, playerEntity, (p) -> p.sendToolBreakStatus(playerEntity.getActiveHand()));
 
-                        if (bl2 || playerEntity.abilities.creativeMode && (itemStack.getItem() == Items.SPECTRAL_ARROW
+                        if (bl2 || playerEntity.getAbilities().creativeMode && (itemStack.getItem() == Items.SPECTRAL_ARROW
                                 || itemStack.getItem() == Items.TIPPED_ARROW)) {
                             persistentProjectileEntity.pickupType =
                                     PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
@@ -121,11 +121,11 @@ public class McdwBow extends BowItem implements IRangedWeapon {
                     world.playSound((PlayerEntity) null, playerEntity.getX(), playerEntity.getY(),
                             playerEntity.getZ(),
                             SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F,
-                            1.0F / (RANDOM.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-                    if (!bl2 && !playerEntity.abilities.creativeMode) {
+                            1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    if (!bl2 && !playerEntity.getAbilities().creativeMode) {
                         itemStack.decrement(1);
                         if (itemStack.isEmpty()) {
-                            playerEntity.inventory.removeOne(itemStack);
+                            playerEntity.getInventory().removeOne(itemStack);
                         }
                     }
 
@@ -174,7 +174,7 @@ public class McdwBow extends BowItem implements IRangedWeapon {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
         boolean bl = !user.getArrowType(itemStack).isEmpty();
-        if (!user.abilities.creativeMode && !bl) {
+        if (!user.getAbilities().creativeMode && !bl) {
             return TypedActionResult.fail(itemStack);
         } else {
             user.setCurrentHand(hand);
