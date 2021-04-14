@@ -4,21 +4,13 @@ package chronosacaria.mcdw.bases;
 import chronosacaria.mcdw.api.interfaces.IRangedWeapon;
 import chronosacaria.mcdw.items.ItemRegistry;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolMaterial;
 import net.minecraft.particle.ParticleEffect;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
@@ -33,23 +25,23 @@ public class McdwBow extends BowItem implements IRangedWeapon {
 
     public final ToolMaterial material;
     public final float maxDrawTime;
-    public static float maxBowRange;
+    public final float maxBowRange;
     private final ParticleEffect type;
 
-    public McdwBow(ToolMaterial material, Settings settings, float maxDrawTime, float maxBowRangePar) {
+    public McdwBow(ToolMaterial material, Settings settings, float maxDrawTime, float maxBowRange) {
         super(settings);
         this.material = material;
         this.maxDrawTime = maxDrawTime;
-        maxBowRange = maxBowRangePar;
-        type = null;
+        this.maxBowRange = maxBowRange;
+        this.type = null;
     }
 
-    public McdwBow(ToolMaterial material, Settings settings, float maxDrawTime, float maxBowRangePar, ParticleEffect particles) {
+    public McdwBow(ToolMaterial material, Settings settings, float maxDrawTime, float maxBowRange, ParticleEffect particles) {
         super(settings);
         this.material = material;
         this.maxDrawTime = maxDrawTime;
-        maxBowRange = maxBowRangePar;
-        type = particles;
+        this.maxBowRange = maxBowRange;
+        this.type = particles;
     }
 
     public float getMaxDrawTime() {

@@ -28,9 +28,13 @@ public class RicochetEnchantmentMixin {
             int level = EnchantmentHelper.getLevel(EnchantsRegistry.RICOCHET, attacker.getMainHandStack());
             if (level >= 1) {
                 float damageMultiplier = 0.1F + ((level - 1) * 0.07F);
-                float arrowVelocity = McdwBow.maxBowRange;
-                if (arrowVelocity > 0.1F) {
-                    ProjectileEffectHelper.riochetArrowTowardsOtherEntity(target, 10, damageMultiplier, arrowVelocity);
+
+                Item heldItem = attacker.getMainHandStack().getItem();
+                if (heldItem instanceof McdwBow) {
+                    McdwBow bow = (McdwBow) heldItem;
+
+                    float arrowVelocity = bow.maxBowRange;
+                    ProjectileEffectHelper.riochetArrowTowardsOtherEntity(attacker, target, 10, damageMultiplier, arrowVelocity);
                 }
             }
         }
