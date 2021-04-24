@@ -64,6 +64,18 @@ public class LivingEntityMixin {
 		}
 	}
 
+	@Unique
+	private void applyCharge(LivingEntity user) {
+		if ((EnchantmentHelper.getLevel(EnchantsRegistry.CHARGE, user.getMainHandStack()) >= 1)) {
+			int level = EnchantmentHelper.getLevel(EnchantsRegistry.CHARGE, user.getMainHandStack());
+			float chargeRand = user.getRandom().nextFloat();
+			if (chargeRand <= 0.1F) {
+				StatusEffectInstance charge = new StatusEffectInstance(StatusEffects.SPEED, level * 20, 4);
+				user.addStatusEffect(charge);
+			}
+		}
+	}
+
 	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
 	public void applyDamage(DamageSource source, float amount, CallbackInfo info) {
 		if(!(source.getAttacker() instanceof PlayerEntity)) return;
@@ -71,31 +83,8 @@ public class LivingEntityMixin {
 
 		if (McdwEnchantsConfig.getValue("chains")) {
 			applyChains(source, amount, user);
-		}
-	}
-
-	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
-	public void applyCharge(DamageSource source, float amount, CallbackInfo info) {
-		if (!(source.getAttacker() instanceof PlayerEntity)) return;
-
-		PlayerEntity user = (PlayerEntity) source.getAttacker();
-		ItemStack mainHandStack = null;
-
-		if (user != null) {
-			mainHandStack = user.getMainHandStack();
-		}
-		boolean uniqueWeaponFlag =
-			false;
-		if (McdwEnchantsConfig.getValue("charge")) {
-
-			if (mainHandStack != null && (EnchantmentHelper.getLevel(EnchantsRegistry.CHARGE, mainHandStack) >= 1)) {
-				int level = EnchantmentHelper.getLevel(EnchantsRegistry.CHARGE, mainHandStack);
-				float chargeRand = user.getRandom().nextFloat();
-				if (chargeRand <= 0.1F) {
-					StatusEffectInstance charge = new StatusEffectInstance(StatusEffects.SPEED, level * 20, 4);
-					user.addStatusEffect(charge);
-				}
-			}
+		} else if (McdwEnchantsConfig.getValue("charge")) {
+			applyCharge(user);
 		}
 	}
 
