@@ -76,23 +76,8 @@ public class LivingEntityMixin {
 		}
 	}
 
-	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
-	public void applyDamage(DamageSource source, float amount, CallbackInfo info) {
-		if(!(source.getAttacker() instanceof PlayerEntity)) return;
-		LivingEntity user = (LivingEntity) source.getAttacker();
-
-		if (McdwEnchantsConfig.getValue("chains")) {
-			applyChains(source, amount, user);
-		} else if (McdwEnchantsConfig.getValue("charge")) {
-			applyCharge(user);
-		}
-	}
-
-	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
-	public void applyCommittedEnchantmentDamage(DamageSource source, float amount, CallbackInfo info) {
-		if(!(source.getAttacker() instanceof PlayerEntity)) return;
-
-		LivingEntity user = (LivingEntity) source.getAttacker();
+	@Unique
+	private void applyCommitted(LivingEntity user, DamageSource source, float amount) {
 		LivingEntity target = (LivingEntity) (Object) this;
 
 		if (source.isProjectile()) return;
@@ -107,7 +92,6 @@ public class LivingEntityMixin {
 
 				if (mainHandStack != null && (EnchantmentHelper.getLevel(EnchantsRegistry.COMMITTED, mainHandStack) >= 1)) {
 					int level = EnchantmentHelper.getLevel(EnchantsRegistry.COMMITTED, mainHandStack);
-
 
 					float getTargetHealth = target.getHealth();
 					float getTargetMaxHealth = target.getMaxHealth();
@@ -136,6 +120,23 @@ public class LivingEntityMixin {
 		}
 	}
 
+	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
+	public void applyDamage(DamageSource source, float amount, CallbackInfo info) {
+		if(!(source.getAttacker() instanceof PlayerEntity)) return;
+		LivingEntity user = (LivingEntity) source.getAttacker();
+
+		if (McdwEnchantsConfig.getValue("chains")) {
+			applyChains(source, amount, user);
+		} else if (McdwEnchantsConfig.getValue("charge")) {
+			applyCharge(user);
+		}
+
+		applyCommitted(user, source, amount);
+	}
+
+	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
+	public void applyCommittedEnchantmentDamage(DamageSource source, float amount, CallbackInfo info) {
+	}
 
 	@Inject(method = "applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", at = @At("HEAD"))
 	public void applyCriticalHitEnchantmentDamage(DamageSource source, float amount, CallbackInfo info) {
